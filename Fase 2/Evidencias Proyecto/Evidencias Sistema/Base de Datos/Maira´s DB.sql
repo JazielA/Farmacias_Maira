@@ -77,12 +77,6 @@ CREATE TABLE public.permissions (
   CONSTRAINT permissions_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE public.productos_normalizados (
-  codigo character varying NOT NULL,
-  nombre_oficial text NOT NULL,
-  actualizado_en timestamp with time zone DEFAULT now(),
-  CONSTRAINT productos_normalizados_pkey PRIMARY KEY (codigo)
-);
 CREATE TABLE public.productos_pos (
   id bigint NOT NULL,
   nombre text NOT NULL,
@@ -109,6 +103,13 @@ CREATE TABLE public.productos_pos (
   otrosprecios jsonb,
   timestamp_descarga timestamp with time zone DEFAULT now(),
   CONSTRAINT productos_pos_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE public.stock_minimo (
+  producto_id bigint NOT NULL REFERENCES productos_pos(id),
+  bodega_id bigint NOT NULL,
+  stock_minimo numeric NOT NULL DEFAULT 0,
+  PRIMARY KEY (producto_id, bodega_id)
 );
 CREATE TABLE public.products (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -173,4 +174,5 @@ CREATE TABLE public.users (
   is_active boolean NOT NULL DEFAULT true,
   CONSTRAINT users_pkey PRIMARY KEY (id),
   CONSTRAINT users_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id)
+
 );
